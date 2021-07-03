@@ -45,85 +45,123 @@ class HomeState extends BaseScreenState {
   Widget getBody(BuildContext context) {
     loadData();
     var valueChoose;
-    return new Center(
+    return Center(
         child: Container(
             child: SizedBox(
                 child: ListView(children: <Widget>[
       Container(
+          margin: EdgeInsets.only(top: 50, bottom: 0, left: 0),
           child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
-              children: <Widget>[
-            Text("CHOOSE TYPE",
-                textAlign: TextAlign.start,
-                style: TextStyle(
-                    fontSize: 10.0,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.black)),
-            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Container(
-                  width: 130.0,
-                  height: 130.0,
-                  child: Card(
-                      margin: EdgeInsets.all(10.0),
-                      elevation: 8,
-                      child: Image.asset(
-                        'assets/images/scale.png',
-                        alignment: Alignment.center,
-                      )),
-                ),
-                Container(
-                  width: 130.0,
-                  height: 130.0,
-                  child: Card(
-                      margin: EdgeInsets.all(10.0),
-                      elevation: 8,
-                      child: Image.asset(
-                        'assets/images/hot.png',
-                        alignment: Alignment.center,
-                      )),
-                ),
-                Container(
-                  width: 130.0,
-                  height: 130.0,
-                  child: Card(
-                      margin: EdgeInsets.all(10.0),
-                      elevation: 8,
-                      child: Image.asset(
-                        'assets/images/beaker.png',
-                        alignment: Alignment.center,
-                      )),
-                ),
-              ],
-            )
-          ])),
+                    width: 500,
+                    margin: EdgeInsets.only(top: 10, left: 5, right: 5),
+                    child: Text("CHOOSE TYPE",
+                        style: TextStyle(
+                            fontSize: 12.0,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.black)),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey, width: 0.1))),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    InkWell(
+                      borderRadius: BorderRadius.only(),
+                      splashColor: Colors.green,
+                      child: Container(
+                        width: 130.0,
+                        height: 135.0,
+                        child: Card(
+                            margin: EdgeInsets.only(
+                                top: 20, bottom: 30, left: 5, right: 5),
+                            elevation: 8,
+                            child: Column(children: <Widget>[
+                              Expanded(
+                                child: Image.asset(
+                                  'assets/images/scale.png',
+                                  alignment: Alignment.center,
+                                ),
+                              ),
+                              Text('Length',
+                                  style: TextStyle(
+                                      fontSize: 10.0,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.greenAccent)),
+                            ])),
+                      ),
+                      onTap: () {},
+                    ),
+                    Container(
+                        width: 130.0,
+                        height: 135.0,
+                        child: Card(
+                            margin: EdgeInsets.only(
+                                top: 20, bottom: 30, left: 5, right: 5),
+                            elevation: 8,
+                            child: Column(children: <Widget>[
+                              Expanded(
+                                  child: Image.asset(
+                                'assets/images/hot.png',
+                                alignment: Alignment.center,
+                              )),
+                              Text('Temperature',
+                                  style: TextStyle(
+                                      fontSize: 10.0,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.black)),
+                            ]))),
+                    Container(
+                      width: 130.0,
+                      height: 135.0,
+                      child: Card(
+                          margin: EdgeInsets.only(
+                              top: 20, bottom: 30, left: 5, right: 5),
+                          elevation: 8,
+                          child: Column(children: <Widget>[
+                            Expanded(
+                                child: Image.asset(
+                              'assets/images/beaker.png',
+                              alignment: Alignment.center,
+                            )),
+                            Text('Volume',
+                                style: TextStyle(
+                                    fontSize: 10.0,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black)),
+                          ])),
+                    )
+                  ],
+                )
+              ])),
       Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: <Widget>[
-        Expanded(
-            child: Container(
-                child: Align(
-                    alignment: Alignment.topCenter,
-                    child: Text("From ",
-                        style: TextStyle(
-                            fontSize: 10.0,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black))))),
-        Expanded(
-            child: Container(
-                child: Align(
-                    alignment: Alignment.topCenter,
-                    child: Text("To",
-                        style: TextStyle(
-                            fontSize: 10.0,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.black)))))
+        Container(
+          width: 145,
+          margin: EdgeInsets.only(left: 37),
+          child: Text('From',
+              style: TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black)),
+        ),
+        Container(
+          width: 150,
+          margin: EdgeInsets.only(right: 40),
+          child: Text('To',
+              style: TextStyle(
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.black)),
+        )
       ]),
       Column(children: <Widget>[
         Row(mainAxisAlignment: MainAxisAlignment.center, children: <Widget>[
           Container(
               width: 150.0,
-              height: 50.0,
+              height: 40.0,
               child: Text('1',
                   style: TextStyle(
                       fontSize: 10.0,
@@ -137,7 +175,7 @@ class HomeState extends BaseScreenState {
               )),
           Container(
               width: 150.0,
-              height: 50.0,
+              height: 40.0,
               child: Text('1000',
                   style: TextStyle(
                       fontSize: 10.0,
@@ -158,6 +196,7 @@ class HomeState extends BaseScreenState {
               children: <Widget>[
                 Container(
                     width: 150.0,
+                    height: 40.0,
                     padding: EdgeInsets.only(left: 16, right: 16),
                     decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey, width: 1)),
@@ -177,6 +216,7 @@ class HomeState extends BaseScreenState {
                         })),
                 Container(
                     width: 150.0,
+                    height: 40.0,
                     padding: EdgeInsets.only(left: 16, right: 16),
                     decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey, width: 1)),
