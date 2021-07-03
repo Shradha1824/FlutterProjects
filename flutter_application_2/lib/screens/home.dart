@@ -16,18 +16,38 @@ class HomeState extends BaseScreenState {
     ));
 
     listDrop.add(new DropdownMenuItem(
-      child: new Text('Feet'),
+      child: new Text('Centimeter'),
       value: 2,
     ));
 
     listDrop.add(new DropdownMenuItem(
-      child: new Text('Kilometers'),
+      child: new Text('Meters'),
       value: 3,
     ));
 
     listDrop.add(new DropdownMenuItem(
-      child: new Text('Inches'),
+      child: new Text('Kilometers'),
       value: 4,
+    ));
+
+    listDrop.add(new DropdownMenuItem(
+      child: new Text('Feets'),
+      value: 5,
+    ));
+
+    listDrop.add(new DropdownMenuItem(
+      child: new Text('Inches'),
+      value: 6,
+    ));
+
+    listDrop.add(new DropdownMenuItem(
+      child: new Text('Micrometer'),
+      value: 7,
+    ));
+
+    listDrop.add(new DropdownMenuItem(
+      child: new Text('Mile'),
+      value: 8,
     ));
   }
 
@@ -70,7 +90,7 @@ class HomeState extends BaseScreenState {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     InkWell(
-                      borderRadius: BorderRadius.only(),
+                      //     borderRadius: BorderRadius.only(),
                       splashColor: Colors.green,
                       child: Container(
                         width: 130.0,
@@ -93,7 +113,7 @@ class HomeState extends BaseScreenState {
                                       color: Colors.greenAccent)),
                             ])),
                       ),
-                      onTap: () {},
+                      onLongPress: () {},
                     ),
                     Container(
                         width: 130.0,
