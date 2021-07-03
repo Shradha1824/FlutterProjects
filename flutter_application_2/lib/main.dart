@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/screens/home.dart';
+import 'package:flutter_application_2/screens/temperature.dart';
 
 void main() {
   runApp(MyApp());
@@ -11,7 +12,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Home(),
+      initialRoute: "/home",
+      routes: {
+        '/home': (context) => Home(),
+        'temperature': (context) => Temperature(),
+      },
     );
   }
 }
