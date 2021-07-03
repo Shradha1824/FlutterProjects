@@ -53,7 +53,6 @@ class HomeState extends BaseScreenState {
           child: Column(
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
             Text("CHOOSE TYPE",
                 textAlign: TextAlign.start,
