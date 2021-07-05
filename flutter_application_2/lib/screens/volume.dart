@@ -1,28 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_2/screens/base_screen.dart';
-import 'package:flutter_application_2/screens/volume.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-class Temperature extends BaseScreen {
-  TemperatureState createState() => TemperatureState();
+class Volume extends BaseScreen {
+  VolumeState createState() => VolumeState();
 }
 
-class TemperatureState extends BaseScreenState {
+class VolumeState extends BaseScreenState {
   List<DropdownMenuItem<int>> listDrop = [];
 
   void loadData() {
     listDrop.add(new DropdownMenuItem(
-      child: new Text('Censius'),
+      child: new Text('Liters'),
       value: 1,
     ));
 
     listDrop.add(new DropdownMenuItem(
-      child: new Text('Fahrenheit'),
+      child: new Text('Mililiters'),
       value: 2,
     ));
 
     listDrop.add(new DropdownMenuItem(
-      child: new Text('Kalvin'),
+      child: new Text('Gallons'),
       value: 3,
     ));
   }
@@ -55,6 +54,7 @@ class TemperatureState extends BaseScreenState {
                 Container(
                     width: 470,
                     // margin: EdgeInsets.only(top: 10, left: 5, right: 5),
+
                     child: Text("CHOOSE TYPE",
                         textAlign: TextAlign.center,
                         style: TextStyle(
@@ -90,41 +90,35 @@ class TemperatureState extends BaseScreenState {
                                         color: Colors.black12)),
                               ])),
                         ),
-                        onDoubleTap: () {},
+                        onTap: () {},
                       ),
                       Row(children: <Widget>[
                         InkWell(
-                          splashColor: Colors.red,
-                          child: Container(
-                              width: 130.0,
-                              height: 135.0,
-                              child: Card(
-                                  margin: EdgeInsets.only(
-                                      top: 20, bottom: 30, left: 5, right: 5),
-                                  elevation: 8,
-                                  child: Column(children: <Widget>[
-                                    Expanded(
-                                        child: Image.asset(
-                                      'assets/images/hotC.png',
-                                      alignment: Alignment.center,
-                                    )),
-                                    Text('Temperature',
-                                        style: TextStyle(
-                                            fontSize: 10.0,
-                                            fontWeight: FontWeight.w700,
-                                            color: Colors.red)),
-                                  ]))),
-                          onDoubleTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => Volume()),
-                            );
-                          },
-                        )
+                            splashColor: Colors.black12,
+                            child: Container(
+                                width: 130.0,
+                                height: 135.0,
+                                child: Card(
+                                    margin: EdgeInsets.only(
+                                        top: 20, bottom: 30, left: 5, right: 5),
+                                    elevation: 8,
+                                    child: Column(children: <Widget>[
+                                      Expanded(
+                                          child: Image.asset(
+                                        'assets/images/hot.png',
+                                        alignment: Alignment.center,
+                                      )),
+                                      Text('Temperature',
+                                          style: TextStyle(
+                                              fontSize: 10.0,
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.black12)),
+                                    ]))),
+                            onDoubleTap: () {}),
                       ]),
                       Row(children: <Widget>[
                         InkWell(
-                          splashColor: Colors.black12,
+                          splashColor: Colors.purpleAccent,
                           child: Container(
                             width: 130.0,
                             height: 135.0,
@@ -135,14 +129,14 @@ class TemperatureState extends BaseScreenState {
                                 child: Column(children: <Widget>[
                                   Expanded(
                                       child: Image.asset(
-                                    'assets/images/beaker.png',
+                                    'assets/images/beakerC.png',
                                     alignment: Alignment.center,
                                   )),
                                   Text('Volume',
                                       style: TextStyle(
                                           fontSize: 10.0,
                                           fontWeight: FontWeight.w700,
-                                          color: Colors.black12)),
+                                          color: Colors.purple)),
                                 ])),
                           ),
                           onTap: () {},
@@ -156,6 +150,7 @@ class TemperatureState extends BaseScreenState {
                         width: 120,
                         margin: EdgeInsets.only(right: 30),
                         child: Text('From',
+                            textAlign: TextAlign.start,
                             style: TextStyle(
                                 fontSize: 12.0,
                                 fontWeight: FontWeight.w700,
@@ -165,6 +160,7 @@ class TemperatureState extends BaseScreenState {
                         width: 120,
                         margin: EdgeInsets.only(right: 40),
                         child: Text('To',
+                            textAlign: TextAlign.start,
                             style: TextStyle(
                                 fontSize: 12.0,
                                 fontWeight: FontWeight.w700,
@@ -178,7 +174,7 @@ class TemperatureState extends BaseScreenState {
                         Container(
                             width: 150.0,
                             height: 40.0,
-                            child: Text('0',
+                            child: Text('1',
                                 style: TextStyle(
                                     fontSize: 10.0,
                                     fontWeight: FontWeight.w700,
@@ -192,7 +188,7 @@ class TemperatureState extends BaseScreenState {
                         Container(
                             width: 150.0,
                             height: 40.0,
-                            child: Text('32',
+                            child: Text('1000',
                                 style: TextStyle(
                                     fontSize: 10.0,
                                     fontWeight: FontWeight.w700,
@@ -219,7 +215,7 @@ class TemperatureState extends BaseScreenState {
                                       Border.all(color: Colors.grey, width: 1)),
                               child: new DropdownButton(
                                   items: listDrop,
-                                  hint: Text('Celsius: '),
+                                  hint: Text('Litres: '),
                                   dropdownColor: Colors.white,
                                   icon: Icon(Icons.arrow_drop_down),
                                   iconSize: 26,
@@ -241,15 +237,15 @@ class TemperatureState extends BaseScreenState {
                                       Border.all(color: Colors.grey, width: 1)),
                               child: new DropdownButton(
                                   items: listDrop,
-                                  hint: Text('Fahrenheit: '),
+                                  hint: Text('Milliliter: '),
                                   dropdownColor: Colors.white,
                                   icon: Icon(Icons.arrow_drop_down),
                                   iconSize: 26,
-                                  // isExpanded: true,
+                                  isExpanded: true,
                                   style: TextStyle(
                                       color: Colors.black, fontSize: 10),
                                   value: valueChoose,
-                                  onChanged: (newValue) {
+                                  onChanged: (valueChanged) {
                                     setState(() {
                                       valueChoose = FocusHighlightMode;
                                     });
