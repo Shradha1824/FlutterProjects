@@ -8,49 +8,51 @@ class Home extends BaseScreen {
 }
 
 class HomeState extends BaseScreenState {
-  List<DropdownMenuItem<int>> listDrop = [];
+  Widget buildText() => TextField(
+        style: TextStyle(fontSize: 10.0, color: Colors.black),
+        decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: "Enter The Value",
+            hintStyle: TextStyle(fontSize: 10.0, color: Colors.black12)),
+        keyboardType: TextInputType.number,
+      );
 
-  void loadData() {
-    listDrop.add(new DropdownMenuItem(
-      child: new Text('Milimeters'),
-      value: 1,
-    ));
+  final List<String> _measureLength = [
+    'Milimeters',
+    'Centimeter',
+    'Meters',
+    'Kilometers',
+    'Feets',
+    'Inches',
+    'Micrometer'
+  ];
 
-    listDrop.add(new DropdownMenuItem(
-      child: new Text('Centimeter'),
-      value: 2,
-    ));
+  var _startMeasureLength;
+  var _convertLength;
 
-    listDrop.add(new DropdownMenuItem(
-      child: new Text('Meters'),
-      value: 3,
-    ));
+  final Map<String, int> _measureMap = {
+    'Milimeters': 0,
+    'Centimeter': 1,
+    'Meters': 2,
+    'Kilometers': 3,
+    'Feets': 4,
+    'Inches': 5,
+    'Yard': 6,
+  };
 
-    listDrop.add(new DropdownMenuItem(
-      child: new Text('Kilometers'),
-      value: 4,
-    ));
+  var _resultMessage;
+  var _numberForm;
+  late double _userInput;
 
-    listDrop.add(new DropdownMenuItem(
-      child: new Text('Feets'),
-      value: 5,
-    ));
-
-    listDrop.add(new DropdownMenuItem(
-      child: new Text('Inches'),
-      value: 6,
-    ));
-
-    listDrop.add(new DropdownMenuItem(
-      child: new Text('Micrometer'),
-      value: 7,
-    ));
-
-    listDrop.add(new DropdownMenuItem(
-      child: new Text('Mile'),
-      value: 8,
-    ));
-  }
+  dynamic _formulas = {
+    '0': [1.0, 0.1, 0.000001, 0.0032808399, 0.03937008, 0.0010936133],
+    '1': [10.0, 1.0, 0.01, 0.00001, 0.0328084, 0.39370078, 0.010936133],
+    '2': [1000.0, 100.0, 1.0, 0.001, 3.28084, 39.37008, 1.0936133],
+    '3': [1000000.0, 100000.0, 1000.0, 1.0, 3280.8398, 39370.08, 1093.6133],
+    '4': [304.8, 30.48, 0.3048, 0.0003048, 1, 12.0, 0.33333334],
+    '5': [25.4, 2.54, 0.0254, 0.0000254, 0.08333336, 1.0, 0.0277778],
+    '6': [914.4, 91.44, 0.9144, 0.000914, 3.0, 36.0, 1.0]
+  };
 
   Widget getAppBar() {
     return AppBar(
@@ -64,8 +66,6 @@ class HomeState extends BaseScreenState {
   }
 
   Widget getBody(BuildContext context) {
-    loadData();
-    var valueChoose;
     return Center(
         child: Container(
             child: SizedBox(
@@ -79,8 +79,6 @@ class HomeState extends BaseScreenState {
               children: <Widget>[
                 Container(
                     width: 470,
-
-                    // margin: EdgeInsets.only(top: 10, left: 200, right: 5),
                     child: Text("CHOOSE TYPE",
                         textAlign: TextAlign.center,
                         style: TextStyle(
@@ -199,92 +197,158 @@ class HomeState extends BaseScreenState {
                                 color: Colors.black54)),
                       )
                     ]),
-                Column(children: <Widget>[
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Container(
-                            width: 150.0,
-                            height: 40.0,
-                            child: Text('1',
-                                style: TextStyle(
-                                    fontSize: 10.0,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black)),
-                            padding: EdgeInsets.all(10.0),
-                            margin: EdgeInsets.all(0.0),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey, width: 1),
-                              borderRadius: BorderRadius.horizontal(),
-                            )),
-                        Container(
-                            width: 150.0,
-                            height: 40.0,
-                            child: Text('1000',
-                                style: TextStyle(
-                                    fontSize: 10.0,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black)),
-                            padding: EdgeInsets.all(10.0),
-                            margin: EdgeInsets.all(0.0),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey, width: 1),
-                              borderRadius: BorderRadius.horizontal(),
-                            ))
-                      ]),
-                  Column(children: <Widget>[
-                    Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Container(
-                              width: 150.0,
-                              height: 40.0,
-                              padding: EdgeInsets.only(left: 16, right: 16),
-                              decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: Colors.grey, width: 1)),
-                              child: new DropdownButton(
-                                  items: listDrop,
-                                  hint: Text('Meter: '),
-                                  dropdownColor: Colors.white,
+                Column(
+                  children: <Widget>[
+                    Row(mainAxisAlignment: MainAxisAlignment.center, children: <
+                        Widget>[
+                      Container(
+                          width: 150.0,
+                          height: 40.0,
+                          child: buildTexts(),
+                          padding: EdgeInsets.all(10.0),
+                          margin: EdgeInsets.all(0.0),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey, width: 1),
+                            borderRadius: BorderRadius.horizontal(),
+                          )),
+                      Container(
+                          width: 150.0,
+                          height: 40.0,
+                          child: Text(
+                              (_resultMessage == null) ? '' : _resultMessage),
+                          padding: EdgeInsets.all(10.0),
+                          margin: EdgeInsets.all(0.0),
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey, width: 1),
+                            borderRadius: BorderRadius.horizontal(),
+                          ))
+                    ]),
+                    Column(children: <Widget>[
+                      Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Container(
+                                width: 150.0,
+                                height: 40.0,
+                                padding: EdgeInsets.only(left: 16, right: 16),
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.grey, width: 1)),
+                                child: new DropdownButton(
+                                  hint: Text(
+                                    'Choose a Unit',
+                                    style: TextStyle(
+                                        color: Colors.black12, fontSize: 10),
+                                  ),
                                   icon: Icon(Icons.arrow_drop_down),
-                                  iconSize: 26,
+                                  iconSize: 20,
                                   isExpanded: true,
+                                  underline: SizedBox(),
                                   style: TextStyle(
-                                      color: Colors.black, fontSize: 10),
-                                  onChanged: (newValue) {
+                                    color: Colors.black,
+                                    fontSize: 10,
+                                  ),
+                                  value: _startMeasureLength,
+                                  onChanged: (newValueSelected) {
                                     setState(() {
-                                      valueChoose = newValue;
+                                      this._startMeasureLength =
+                                          newValueSelected;
                                     });
-                                  })),
-                          Container(
-                              width: 150.0,
-                              height: 40.0,
-                              padding: EdgeInsets.only(left: 16, right: 16),
-                              decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: Colors.grey, width: 1)),
-                              child: new DropdownButton(
-                                  items: listDrop,
-                                  hint: Text('Centimeter: '),
-                                  dropdownColor: Colors.white,
+                                  },
+                                  items: _measureLength.map((valueItem) {
+                                    return DropdownMenuItem<String>(
+                                      value: valueItem,
+                                      child: Text(valueItem),
+                                    );
+                                  }).toList(),
+                                )),
+                            Container(
+                                width: 150.0,
+                                height: 40.0,
+                                padding: EdgeInsets.only(left: 16, right: 16),
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.grey, width: 1)),
+                                child: new DropdownButton(
+                                  hint: Text(
+                                    'Choose a Unit',
+                                    style: TextStyle(
+                                        color: Colors.black12, fontSize: 10),
+                                  ),
                                   icon: Icon(Icons.arrow_drop_down),
-                                  iconSize: 26,
+                                  iconSize: 20,
                                   isExpanded: true,
+                                  underline: SizedBox(),
                                   style: TextStyle(
-                                      color: Colors.black, fontSize: 10),
-                                  //  value: valueChoose,
-                                  onChanged: (newValue) {
+                                    color: Colors.black,
+                                    fontSize: 10,
+                                  ),
+                                  value: _convertLength,
+                                  onChanged: (newValueSelected) {
                                     setState(() {
-                                      valueChoose = newValue;
+                                      this._convertLength = newValueSelected;
                                     });
-                                  }))
-                        ]),
-                  ]),
-                ])
+                                  },
+                                  items: _measureLength.map((valueItem) {
+                                    return DropdownMenuItem<String>(
+                                      value: valueItem,
+                                      child: Text(valueItem),
+                                    );
+                                  }).toList(),
+                                )),
+                          ]),
+                    ]),
+                    Column(
+                      children: [
+                        ElevatedButton(
+                          child: Text('Convert'),
+                          style: TextButton.styleFrom(
+                            primary: Colors.black12,
+                            textStyle: TextStyle(
+                              color: Colors.black45,
+                              fontSize: 15,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                          onPressed: () {
+                            convert(_userInput, _startMeasureLength,
+                                _convertLength);
+                          },
+                        )
+                      ],
+                    )
+                  ],
+                )
               ]))
     ]))));
+  }
+
+  Widget buildTexts() => TextField(
+        style: TextStyle(fontSize: 10.0, color: Colors.black),
+        decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: "Enter The Value",
+            hintStyle: TextStyle(fontSize: 10.0, color: Colors.black12)),
+        keyboardType: TextInputType.number,
+      );
+
+  void convert(double value, String from, String to) {
+    int? nFrom = _measureMap[from];
+    int? nTo = _measureMap[to];
+    var multiplier = _formulas[nFrom.toString()][nTo];
+    var result = value * multiplier;
+
+    _resultMessage = '${result.toString()}';
+
+    setState(() {
+      _resultMessage = _resultMessage;
+    });
+
+    void iniState() {
+      _userInput = 0;
+      super.initState();
+    }
   }
 }

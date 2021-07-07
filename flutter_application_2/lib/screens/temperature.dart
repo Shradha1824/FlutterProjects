@@ -8,24 +8,21 @@ class Temperature extends BaseScreen {
 }
 
 class TemperatureState extends BaseScreenState {
-  List<DropdownMenuItem<int>> listDrop = [];
+  final List<String> _measureTemperature = ['Censius', 'Fahrenheit', 'Kalvin'];
 
-  void loadData() {
-    listDrop.add(new DropdownMenuItem(
-      child: new Text('Censius'),
-      value: 1,
-    ));
+  var _startMeasureTemperature;
+  var _convertTemperature;
+  var _resultMessage;
+  var _numberForm;
+  late double _userInput;
 
-    listDrop.add(new DropdownMenuItem(
-      child: new Text('Fahrenheit'),
-      value: 2,
-    ));
+  final Map<String, int> _measureMap = {
+    'Censius': 0,
+    'Fahrenheit': 1,
+    'Kalvin': 2
+  };
 
-    listDrop.add(new DropdownMenuItem(
-      child: new Text('Kalvin'),
-      value: 3,
-    ));
-  }
+  dynamic _formulas = {'0': [], '1': [], '2': []};
 
   Widget getAppBar() {
     return AppBar(
@@ -39,8 +36,6 @@ class TemperatureState extends BaseScreenState {
   }
 
   Widget getBody(BuildContext context) {
-    loadData();
-    var valueChoose;
     return Center(
         child: Container(
             child: SizedBox(
@@ -54,7 +49,6 @@ class TemperatureState extends BaseScreenState {
               children: <Widget>[
                 Container(
                     width: 470,
-                    // margin: EdgeInsets.only(top: 10, left: 5, right: 5),
                     child: Text("CHOOSE TYPE",
                         textAlign: TextAlign.center,
                         style: TextStyle(
@@ -178,11 +172,7 @@ class TemperatureState extends BaseScreenState {
                         Container(
                             width: 150.0,
                             height: 40.0,
-                            child: Text('0',
-                                style: TextStyle(
-                                    fontSize: 10.0,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.black)),
+                            child: buildText(),
                             padding: EdgeInsets.all(10.0),
                             margin: EdgeInsets.all(0.0),
                             decoration: BoxDecoration(
@@ -218,20 +208,33 @@ class TemperatureState extends BaseScreenState {
                                   border:
                                       Border.all(color: Colors.grey, width: 1)),
                               child: new DropdownButton(
-                                  items: listDrop,
-                                  hint: Text('Celsius: '),
-                                  dropdownColor: Colors.white,
-                                  icon: Icon(Icons.arrow_drop_down),
-                                  iconSize: 26,
-                                  isExpanded: true,
+                                hint: Text(
+                                  'Choose a Unit',
                                   style: TextStyle(
-                                      color: Colors.black, fontSize: 10),
-                                  //value: valueChoose(),
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      valueChoose = newValue;
-                                    });
-                                  })),
+                                      color: Colors.black12, fontSize: 10),
+                                ),
+                                icon: Icon(Icons.arrow_drop_down),
+                                iconSize: 20,
+                                isExpanded: true,
+                                underline: SizedBox(),
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 10,
+                                ),
+                                value: _startMeasureTemperature,
+                                onChanged: (newValueSelected) {
+                                  setState(() {
+                                    this._startMeasureTemperature =
+                                        newValueSelected;
+                                  });
+                                },
+                                items: _measureTemperature.map((valueItem) {
+                                  return DropdownMenuItem<String>(
+                                    value: valueItem,
+                                    child: Text(valueItem),
+                                  );
+                                }).toList(),
+                              )),
                           Container(
                               width: 150.0,
                               height: 40.0,
@@ -240,24 +243,82 @@ class TemperatureState extends BaseScreenState {
                                   border:
                                       Border.all(color: Colors.grey, width: 1)),
                               child: new DropdownButton(
-                                  items: listDrop,
-                                  hint: Text('Fahrenheit: '),
-                                  dropdownColor: Colors.white,
-                                  icon: Icon(Icons.arrow_drop_down),
-                                  iconSize: 26,
-                                  // isExpanded: true,
+                                hint: Text(
+                                  'Choose a Unit',
                                   style: TextStyle(
-                                      color: Colors.black, fontSize: 10),
-                                  value: valueChoose,
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      valueChoose = FocusHighlightMode;
-                                    });
-                                  }))
+                                      color: Colors.black12, fontSize: 10),
+                                ),
+                                icon: Icon(Icons.arrow_drop_down),
+                                iconSize: 20,
+                                isExpanded: true,
+                                underline: SizedBox(),
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 10,
+                                ),
+                                value: _convertTemperature,
+                                onChanged: (newValueSelected) {
+                                  setState(() {
+                                    this._convertTemperature = newValueSelected;
+                                  });
+                                },
+                                items: _measureTemperature.map((valueItem) {
+                                  return DropdownMenuItem<String>(
+                                    value: valueItem,
+                                    child: Text(valueItem),
+                                  );
+                                }).toList(),
+                              )),
                         ]),
                   ]),
+                  Column(
+                    children: [
+                      ElevatedButton(
+                        child: Text('Convert'),
+                        style: TextButton.styleFrom(
+                          primary: Colors.black12,
+                          textStyle: TextStyle(
+                            color: Colors.black45,
+                            fontSize: 15,
+                            fontStyle: FontStyle.italic,
+                          ),
+                        ),
+                        onPressed: () {
+                          convert(_userInput, _startMeasureTemperature,
+                              _convertTemperature);
+                        },
+                      )
+                    ],
+                  )
                 ])
               ]))
     ]))));
+  }
+
+  Widget buildText() => TextField(
+        style: TextStyle(fontSize: 10.0, color: Colors.black),
+        decoration: InputDecoration(
+            border: InputBorder.none,
+            hintText: "Enter The Value",
+            hintStyle: TextStyle(fontSize: 10.0, color: Colors.black12)),
+        keyboardType: TextInputType.number,
+      );
+
+  void convert(double value, String from, String to) {
+    int? nFrom = _measureMap[from];
+    int? nTo = _measureMap[to];
+    var multiplier = _formulas[nFrom.toString()][nTo];
+    var result = value * multiplier;
+
+    _resultMessage = '${result.toString()}';
+
+    setState(() {
+      _resultMessage = _resultMessage;
+    });
+
+    void iniState() {
+      _userInput = 0;
+      super.initState();
+    }
   }
 }
