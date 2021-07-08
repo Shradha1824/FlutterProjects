@@ -8,14 +8,10 @@ class Home extends BaseScreen {
 }
 
 class HomeState extends BaseScreenState {
-  Widget buildText() => TextField(
-        style: TextStyle(fontSize: 10.0, color: Colors.black),
-        decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: "Enter The Value",
-            hintStyle: TextStyle(fontSize: 10.0, color: Colors.black12)),
-        keyboardType: TextInputType.number,
-      );
+  void iniState() {
+    _userInput = 0;
+    super.initState();
+  }
 
   final List<String> _measureLength = [
     'Milimeters',
@@ -24,7 +20,7 @@ class HomeState extends BaseScreenState {
     'Kilometers',
     'Feets',
     'Inches',
-    'Micrometer'
+    'Yard'
   ];
 
   var _startMeasureLength;
@@ -41,18 +37,30 @@ class HomeState extends BaseScreenState {
   };
 
   var _resultMessage;
-  var _numberForm;
   late double _userInput;
 
   dynamic _formulas = {
-    '0': [1.0, 0.1, 0.000001, 0.0032808399, 0.03937008, 0.0010936133],
-    '1': [10.0, 1.0, 0.01, 0.00001, 0.0328084, 0.39370078, 0.010936133],
-    '2': [1000.0, 100.0, 1.0, 0.001, 3.28084, 39.37008, 1.0936133],
+    '0': [1.0, 0.1, 0.001, 0.000001, 0.0033, 0.0394, 0.0011],
+    '1': [10.0, 1.0, 0.01, 0.00001, 0.0328, 0.3937, 0.0109],
+    '2': [1000.0, 100.0, 1.0, 0.001, 3.2808, 39.3701, 1.0936],
     '3': [1000000.0, 100000.0, 1000.0, 1.0, 3280.8398, 39370.08, 1093.6133],
-    '4': [304.8, 30.48, 0.3048, 0.0003048, 1, 12.0, 0.33333334],
-    '5': [25.4, 2.54, 0.0254, 0.0000254, 0.08333336, 1.0, 0.0277778],
+    '4': [304.8, 30.48, 0.3048, 0.0003, 1, 12.0, 0.3333],
+    '5': [25.4, 2.54, 0.0254, 0.0000254, 0.0833, 1.0, 0.0277],
     '6': [914.4, 91.44, 0.9144, 0.000914, 3.0, 36.0, 1.0]
   };
+
+  void convert(double value, String from, String to) {
+    int? nFrom = _measureMap[from];
+    int? nTo = _measureMap[to];
+    var multiplier = _formulas[nFrom.toString()][nTo];
+    var result = value * multiplier;
+
+    _resultMessage = '${result.toString()}';
+
+    setState(() {
+      _resultMessage = _resultMessage;
+    });
+  }
 
   Widget getAppBar() {
     return AppBar(
@@ -82,8 +90,8 @@ class HomeState extends BaseScreenState {
                     child: Text("CHOOSE TYPE",
                         textAlign: TextAlign.center,
                         style: TextStyle(
-                            fontSize: 12.0,
-                            fontWeight: FontWeight.w800,
+                            fontSize: 15.0,
+                            fontWeight: FontWeight.w600,
                             color: Colors.black)),
                     decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey, width: 0.1))),
@@ -95,7 +103,7 @@ class HomeState extends BaseScreenState {
                         splashColor: Colors.green,
                         child: Container(
                             width: 130.0,
-                            height: 135.0,
+                            height: 140.0,
                             child: Card(
                                 margin: EdgeInsets.only(
                                     top: 20, bottom: 30, left: 5, right: 5),
@@ -126,7 +134,7 @@ class HomeState extends BaseScreenState {
                           splashColor: Colors.black12,
                           child: Container(
                               width: 130.0,
-                              height: 135.0,
+                              height: 140.0,
                               child: Card(
                                   margin: EdgeInsets.only(
                                       top: 20, bottom: 30, left: 5, right: 5),
@@ -151,7 +159,7 @@ class HomeState extends BaseScreenState {
                           splashColor: Colors.black12,
                           child: Container(
                             width: 130.0,
-                            height: 135.0,
+                            height: 140.0,
                             child: Card(
                                 margin: EdgeInsets.only(
                                     top: 20, bottom: 30, left: 5, right: 5),
@@ -182,8 +190,8 @@ class HomeState extends BaseScreenState {
                         child: Text(
                           'From',
                           style: TextStyle(
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.w700,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w600,
                               color: Colors.black54),
                         ),
                       ),
@@ -192,37 +200,60 @@ class HomeState extends BaseScreenState {
                         width: 120,
                         child: Text('To',
                             style: TextStyle(
-                                fontSize: 12.0,
-                                fontWeight: FontWeight.w700,
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.w600,
                                 color: Colors.black54)),
                       )
                     ]),
                 Column(
                   children: <Widget>[
-                    Row(mainAxisAlignment: MainAxisAlignment.center, children: <
-                        Widget>[
-                      Container(
-                          width: 150.0,
-                          height: 40.0,
-                          child: buildTexts(),
-                          padding: EdgeInsets.all(10.0),
-                          margin: EdgeInsets.all(0.0),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey, width: 1),
-                            borderRadius: BorderRadius.horizontal(),
-                          )),
-                      Container(
-                          width: 150.0,
-                          height: 40.0,
-                          child: Text(
-                              (_resultMessage == null) ? '' : _resultMessage),
-                          padding: EdgeInsets.all(10.0),
-                          margin: EdgeInsets.all(0.0),
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey, width: 1),
-                            borderRadius: BorderRadius.horizontal(),
-                          ))
-                    ]),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Container(
+                              width: 150.0,
+                              height: 40.0,
+                              child: TextField(
+                                  style: TextStyle(
+                                      fontSize: 12.0, color: Colors.black),
+                                  decoration: InputDecoration(
+                                      border: InputBorder.none,
+                                      hintText: "Enter The Value",
+                                      hintStyle: TextStyle(
+                                          fontSize: 12.0,
+                                          color: Colors.black12)),
+                                  keyboardType: TextInputType.number,
+                                  onChanged: (text) {
+                                    var input = double.tryParse(text);
+                                    if (input != null)
+                                      setState(() {
+                                        _userInput = input;
+                                      });
+                                  }),
+                              padding: EdgeInsets.all(10.0),
+                              margin: EdgeInsets.all(0.0),
+                              decoration: BoxDecoration(
+                                border:
+                                    Border.all(color: Colors.grey, width: 1),
+                                borderRadius: BorderRadius.horizontal(),
+                              )),
+                          Container(
+                            padding: EdgeInsets.all(10.0),
+                            width: 150.0,
+                            height: 40.0,
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey, width: 1),
+                              borderRadius: BorderRadius.horizontal(),
+                            ),
+                            child: Text(
+                              (_resultMessage == null) ? '' : _resultMessage,
+                              style: TextStyle(
+                                color: HexColor('#000000'),
+                                fontSize: 1,
+                              ),
+                            ),
+                          ),
+                        ]),
                     Column(children: <Widget>[
                       Row(
                           mainAxisSize: MainAxisSize.min,
@@ -240,7 +271,7 @@ class HomeState extends BaseScreenState {
                                   hint: Text(
                                     'Choose a Unit',
                                     style: TextStyle(
-                                        color: Colors.black12, fontSize: 10),
+                                        color: Colors.black12, fontSize: 12),
                                   ),
                                   icon: Icon(Icons.arrow_drop_down),
                                   iconSize: 20,
@@ -248,7 +279,7 @@ class HomeState extends BaseScreenState {
                                   underline: SizedBox(),
                                   style: TextStyle(
                                     color: Colors.black,
-                                    fontSize: 10,
+                                    fontSize: 12,
                                   ),
                                   value: _startMeasureLength,
                                   onChanged: (newValueSelected) {
@@ -275,7 +306,7 @@ class HomeState extends BaseScreenState {
                                   hint: Text(
                                     'Choose a Unit',
                                     style: TextStyle(
-                                        color: Colors.black12, fontSize: 10),
+                                        color: Colors.black12, fontSize: 12),
                                   ),
                                   icon: Icon(Icons.arrow_drop_down),
                                   iconSize: 20,
@@ -283,7 +314,7 @@ class HomeState extends BaseScreenState {
                                   underline: SizedBox(),
                                   style: TextStyle(
                                     color: Colors.black,
-                                    fontSize: 10,
+                                    fontSize: 12,
                                   ),
                                   value: _convertLength,
                                   onChanged: (newValueSelected) {
@@ -303,6 +334,15 @@ class HomeState extends BaseScreenState {
                     Column(
                       children: [
                         ElevatedButton(
+                          onPressed: () {
+                            if (_startMeasureLength.isEmpty ||
+                                _convertLength.isEmpty ||
+                                _userInput == 0)
+                              return;
+                            else
+                              convert(_userInput, _startMeasureLength,
+                                  _convertLength);
+                          },
                           child: Text('Convert'),
                           style: TextButton.styleFrom(
                             primary: Colors.black12,
@@ -312,10 +352,6 @@ class HomeState extends BaseScreenState {
                               fontStyle: FontStyle.italic,
                             ),
                           ),
-                          onPressed: () {
-                            convert(_userInput, _startMeasureLength,
-                                _convertLength);
-                          },
                         )
                       ],
                     )
@@ -323,32 +359,5 @@ class HomeState extends BaseScreenState {
                 )
               ]))
     ]))));
-  }
-
-  Widget buildTexts() => TextField(
-        style: TextStyle(fontSize: 10.0, color: Colors.black),
-        decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: "Enter The Value",
-            hintStyle: TextStyle(fontSize: 10.0, color: Colors.black12)),
-        keyboardType: TextInputType.number,
-      );
-
-  void convert(double value, String from, String to) {
-    int? nFrom = _measureMap[from];
-    int? nTo = _measureMap[to];
-    var multiplier = _formulas[nFrom.toString()][nTo];
-    var result = value * multiplier;
-
-    _resultMessage = '${result.toString()}';
-
-    setState(() {
-      _resultMessage = _resultMessage;
-    });
-
-    void iniState() {
-      _userInput = 0;
-      super.initState();
-    }
   }
 }
