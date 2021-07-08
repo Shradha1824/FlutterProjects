@@ -7,6 +7,11 @@ class Volume extends BaseScreen {
 }
 
 class VolumeState extends BaseScreenState {
+  void iniState() {
+    _userInput = 0;
+    super.initState();
+  }
+
   final List<String> _measures = ["Liters", "Mililiters", "Gallons"];
 
   var _currentSelectedValue;
@@ -21,14 +26,23 @@ class VolumeState extends BaseScreenState {
   };
 
   dynamic _formulas = {
-    '0': [1.0, 0.1, 0.000001, 0.0032808399, 0.03937008, 0.0010936133],
-    '1': [10.0, 1.0, 0.01, 0.00001, 0.0328084, 0.39370078, 0.010936133],
-    '2': [1000.0, 100.0, 1.0, 0.001, 3.28084, 39.37008, 1.0936133],
-    '3': [1000000.0, 100000.0, 1000.0, 1.0, 3280.8398, 39370.08, 1093.6133],
-    '4': [304.8, 30.48, 0.3048, 0.0003048, 1, 12.0, 0.33333334],
-    '5': [25.4, 2.54, 0.0254, 0.0000254, 0.08333336, 1.0, 0.0277778],
-    '6': [914.4, 91.44, 0.9144, 0.000914, 3.0, 36.0, 1.0]
+    '0': [1.0, 1000.0, 0.219969],
+    '1': [0.001, 1.0, 0.00022],
+    '2': [4546.09, 4.54609, 1.0],
   };
+
+  void convert(double value, String from, String to) {
+    int? nFrom = _measureMap[from];
+    int? nTo = _measureMap[to];
+    var multiplier = _formulas[nFrom.toString()][nTo];
+    var result = value * multiplier;
+
+    _resultMessage = '${result.toString()}';
+
+    setState(() {
+      _resultMessage = _resultMessage;
+    });
+  }
 
   Widget getAppBar() {
     return AppBar(
@@ -58,8 +72,8 @@ class VolumeState extends BaseScreenState {
                   child: Text("CHOOSE TYPE",
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                          fontSize: 12.0,
-                          fontWeight: FontWeight.w800,
+                          fontSize: 15.0,
+                          fontWeight: FontWeight.w600,
                           color: Colors.black)),
                   decoration: BoxDecoration(
                       border: Border.all(color: Colors.grey, width: 0.1))),
@@ -71,7 +85,7 @@ class VolumeState extends BaseScreenState {
                       splashColor: Colors.black12,
                       child: Container(
                         width: 130.0,
-                        height: 135.0,
+                        height: 140.0,
                         child: Card(
                             margin: EdgeInsets.only(
                                 top: 20, bottom: 30, left: 5, right: 5),
@@ -97,7 +111,7 @@ class VolumeState extends BaseScreenState {
                           splashColor: Colors.black12,
                           child: Container(
                               width: 130.0,
-                              height: 135.0,
+                              height: 140.0,
                               child: Card(
                                   margin: EdgeInsets.only(
                                       top: 20, bottom: 30, left: 5, right: 5),
@@ -121,7 +135,7 @@ class VolumeState extends BaseScreenState {
                         splashColor: Colors.purpleAccent,
                         child: Container(
                           width: 130.0,
-                          height: 135.0,
+                          height: 140.0,
                           child: Card(
                               margin: EdgeInsets.only(
                                   top: 20, bottom: 30, left: 5, right: 5),
@@ -152,8 +166,8 @@ class VolumeState extends BaseScreenState {
                       child: Text('From',
                           textAlign: TextAlign.start,
                           style: TextStyle(
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.w700,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w600,
                               color: Colors.black54)),
                     ),
                     Container(
@@ -162,8 +176,8 @@ class VolumeState extends BaseScreenState {
                       child: Text('To',
                           textAlign: TextAlign.start,
                           style: TextStyle(
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.w700,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.w600,
                               color: Colors.black54)),
                     )
                   ]),
@@ -174,7 +188,22 @@ class VolumeState extends BaseScreenState {
                       Container(
                           width: 150.0,
                           height: 40.0,
-                          child: buildText(),
+                          child: TextField(
+                              style: TextStyle(
+                                  fontSize: 12.0, color: Colors.black),
+                              decoration: InputDecoration(
+                                  border: InputBorder.none,
+                                  hintText: "Enter The Value",
+                                  hintStyle: TextStyle(
+                                      fontSize: 12.0, color: Colors.black12)),
+                              keyboardType: TextInputType.number,
+                              onChanged: (text) {
+                                var input = double.tryParse(text);
+                                if (input != null)
+                                  setState(() {
+                                    _userInput = input;
+                                  });
+                              }),
                           padding: EdgeInsets.all(10.0),
                           margin: EdgeInsets.all(0.0),
                           decoration: BoxDecoration(
@@ -184,11 +213,13 @@ class VolumeState extends BaseScreenState {
                       Container(
                           width: 150.0,
                           height: 40.0,
-                          child: Text('1000',
-                              style: TextStyle(
-                                  fontSize: 10.0,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.black)),
+                          child: Text(
+                            (_resultMessage == null) ? '' : _resultMessage,
+                            style: TextStyle(
+                              color: HexColor('#000000'),
+                              fontSize: 12,
+                            ),
+                          ),
                           padding: EdgeInsets.all(10.0),
                           margin: EdgeInsets.all(0.0),
                           decoration: BoxDecoration(
@@ -214,7 +245,7 @@ class VolumeState extends BaseScreenState {
                               hint: Text(
                                 'Choose a Unit',
                                 style: TextStyle(
-                                    color: Colors.black12, fontSize: 10),
+                                    color: Colors.black12, fontSize: 12),
                               ),
                               icon: Icon(Icons.arrow_drop_down),
                               iconSize: 20,
@@ -222,7 +253,7 @@ class VolumeState extends BaseScreenState {
                               underline: SizedBox(),
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 10,
+                                fontSize: 12,
                               ),
                               value: _currentSelectedValue,
                               onChanged: (newValueSelected) {
@@ -249,7 +280,7 @@ class VolumeState extends BaseScreenState {
                               hint: Text(
                                 'Choose a Unit',
                                 style: TextStyle(
-                                    color: Colors.black12, fontSize: 10),
+                                    color: Colors.black12, fontSize: 12),
                               ),
                               icon: Icon(Icons.arrow_drop_down),
                               iconSize: 20,
@@ -257,7 +288,7 @@ class VolumeState extends BaseScreenState {
                               underline: SizedBox(),
                               style: TextStyle(
                                 color: Colors.black,
-                                fontSize: 10,
+                                fontSize: 12,
                               ),
                               value: _convertMeasures,
                               onChanged: (newValueSelected) {
@@ -277,6 +308,15 @@ class VolumeState extends BaseScreenState {
                 Column(
                   children: [
                     ElevatedButton(
+                      onPressed: () {
+                        if (_currentSelectedValue.isEmpty ||
+                            _convertMeasures.isEmpty ||
+                            _userInput == 0)
+                          return;
+                        else
+                          convert(_userInput, _currentSelectedValue,
+                              _convertMeasures);
+                      },
                       child: Text('Convert'),
                       style: TextButton.styleFrom(
                         primary: Colors.black12,
@@ -286,10 +326,6 @@ class VolumeState extends BaseScreenState {
                           fontStyle: FontStyle.italic,
                         ),
                       ),
-                      onPressed: () {
-                        convert(_userInput, _currentSelectedValue,
-                            _convertMeasures);
-                      },
                     )
                   ],
                 )
@@ -297,27 +333,5 @@ class VolumeState extends BaseScreenState {
             ]),
       )
     ]))));
-  }
-
-  Widget buildText() => TextField(
-        style: TextStyle(fontSize: 10.0, color: Colors.black),
-        decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: "Enter The Value",
-            hintStyle: TextStyle(fontSize: 10.0, color: Colors.black12)),
-        keyboardType: TextInputType.number,
-      );
-
-  void convert(double value, String from, String to) {
-    int? nFrom = _measureMap[from];
-    int? nTo = _measureMap[to];
-    var multiplier = _formulas[nFrom.toString()][nTo];
-    var result = value * multiplier;
-
-    _resultMessage = '${result.toString()}';
-
-    setState(() {
-      _resultMessage = _resultMessage;
-    });
   }
 }
